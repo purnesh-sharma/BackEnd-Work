@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const AddPCategory = () => {
 
   const[parentCategory, setParentCategory] = useState([]);
+  const[preview, setPreview] = useState('');
   
   const fatchCategory = ()=>{
     axios.get(`${process.env.REACT_APP_API_HOST}/api/admin-panel/parent-category/active-categories`)
@@ -15,8 +17,40 @@ const AddPCategory = () => {
       console.log(error);
     })
   };
-
+  
   useEffect(()=>{fatchCategory();},[]);
+   
+  const handleAddCategory = (e)=>{
+    e.preventDefault();
+    
+    if(e.target.parent_category.value === 'default') {
+      Swal.fire({
+        title: "Select Parent Category",
+        text: "Please Select Parent Category",
+        icon: "question"
+      });
+
+      return
+    }
+    axios.post(`${process.env.REACT_APP_API_HOST}/api/admin-panel/product-category/create-category`, e.target)
+    .then((response)=>{
+      console.log(response);
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+  };
+
+  const handleImgPreview = (e)=>{
+    const file = e.target.files[0];
+
+    const reader = new FileReader;
+    reader.readAsDataURL(file);
+
+    reader.onload = () =>{
+      setPreview(reader.result)
+    }
+  }
 
   return (
     <div className="w-[90%] mx-auto my-[150px] bg-white border rounded-[10px]">
@@ -24,7 +58,7 @@ const AddPCategory = () => {
         Add Category
       </span>
       <div className="w-[90%] mx-auto my-[20px]">
-        <form method="post" >
+        <form method="post" onSubmit={handleAddCategory} >
           <div className="w-full my-[10px]">
             <label htmlFor="categoryName" className="block text-[#303640]">
               Category Name
@@ -38,6 +72,18 @@ const AddPCategory = () => {
             />
           </div>
           <div className="w-full my-[10px]">
+            <label htmlFor="categoryName" className="block text-[#303640]">
+              Category slug
+            </label>
+            <input
+              type="text"
+              name="slug"
+              id="slug"
+              placeholder="slug name"
+              className="input border p-1 w-full rounded-[5px] my-[10px]"
+            />
+          </div>
+          <div className="w-full my-[10px]">
             <label htmlFor="categoryImg" className="block text-[#303640]">
               Category Image
             </label>
@@ -46,30 +92,36 @@ const AddPCategory = () => {
               name="thumbnail"
               id="categoryImg"
               className="input border w-full rounded-[5px] my-[10px] category"
+              onChange={handleImgPreview}
             />
+            {
+              (!preview) ? ('') : (
+                <img className="w-[200px]" src={preview}/>
+              )
+            }
           </div>
           <div className="w-full my-[10px]">
             <label htmlFor="categoryImg" className="block text-[#303640]">
               Parent Category
             </label>
-            <select name="parent_category" id="" className="border w-full rounded-[5px] my-[10px] category input">
-             
+            <select name="parent_category" id="" className="border w-full rounded-[5px] my-[10px] p-3 category input">
+            <option value={'default'}>--- Select Parent Category ---</option>
               {
                 parentCategory.map((parentCategory)=>(
-                  <option key={parentCategory.id} value={parentCategory._id}>{parentCategory.name}</option>
+                  <option  value={parentCategory._id}>{parentCategory.name}</option>
                 ))
               }
             </select>
           </div>
           <div className="w-full my-[10px]">
-            <label htmlFor="categoryDesc" className="block text-[#303640]">
+            <label htmlFor="categoryDesc" className="block text-[#303640] ">
               Category Description
             </label>
             <textarea
               type="file"
               name="description"
               id="categoryDesc"
-              className="input border w-full rounded-[5px] my-[10px]"
+              className="input border w-full rounded-[5px]  px-2"
             />
           </div>
           <div className="w-full my-[10px]">
@@ -83,7 +135,7 @@ const AddPCategory = () => {
               type="radio"
               name="status"
               id="categoryStatus"
-              
+              value={true}
               className="input my-[10px] mx-[10px] accent-[#5351c9] cursor-pointer"
             />
             <span>Display</span>
@@ -91,14 +143,14 @@ const AddPCategory = () => {
               type="radio"
               name="status"
               id="categoryStatus"
-              
+              value={false}
               className="input my-[10px] mx-[10px] accent-[#5351c9] cursor-pointer"
             />
             <span>Hide</span>
           </div>
           <div className="w-full my-[20px] ">
-            <button type="submit" className="bg-[#5351c9] rounded-md text-white w-[100px] h-[35px]">
-              Add Size
+            <button type="submit" className="bg-[#5351c9] rounded-md text-white px-2 h-[35px]">
+              Add Category
             </button>
           </div>
         </form>

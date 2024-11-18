@@ -27,7 +27,7 @@ const ViewCategory = () => {
   const fatchCategory = ()=>{
     axios.get(`${process.env.REACT_APP_API_HOST}/api/admin-panel/parent-category/read-category`)
     .then((response)=>{
-      console.log(response.data);
+      // console.log(response.data);
       setCategorys(response.data.data);
     })
     .catch((error)=>{
@@ -38,7 +38,7 @@ const ViewCategory = () => {
   const fatchDeletedCategory = ()=>{
     axios.get(`${process.env.REACT_APP_API_HOST}/api/admin-panel/parent-category/deleted-categorys`)
     .then((response)=>{
-      console.log(response.data);
+      // console.log(response.data);
       setDeletedCategorys(response.data.data);
     })
     .catch((error)=>{
@@ -199,13 +199,15 @@ const ViewCategory = () => {
               <tr className="text-left border-b">
                 <th>
                  <button 
-                 className="bg-red-400 rounded-sm px-2 py-1"
+                 className="bg-red-400 rounded-sm px-2 py-1 mx-2"
                  >Delete</button>
                   <input
-                    type="checkbox"
-                    name="deleteAll"
-                    id="deleteAllCat"
-                    className="accent-[#5351c9]"
+                   type="checkbox"
+                   name="deleteAll"
+                   id="deleteAllCat"
+                   onClick={handleAllCheck }
+                   className="accent-[#5351c9] cursor-pointer"
+                   checked={ifAllChecked}
                   />
                 </th>
                 <th>Sno</th>
@@ -226,6 +228,8 @@ const ViewCategory = () => {
                     id="delete1"
                     value={category._id}
                     className="accent-[#5351c9] cursor-pointer"
+                    onClick={handleCheck}
+                    checked={checked.includes(category._id)}
                   />
                 </td>
                 <td>{index + 1}</td>
@@ -249,7 +253,8 @@ const ViewCategory = () => {
                   )}
                 </td>
                 <td className="flex items-center">
-                  <MdDelete className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
+                  <MdDelete className="my-[5px] text-red-500 cursor-pointer inline" 
+                  onClick={()=>{handleDeleteCategory(category._id)}}/>{" "}
                   |{" "}
                   <FaTrashRestoreAlt onClick={()=>{handleRestoreCategory(category._id)}} className="cursor-pointer"/>
                 </td>
@@ -269,7 +274,7 @@ const ViewCategory = () => {
             <tr className="text-left border-b">
               <th>
                <button 
-               className="bg-red-400 rounded-sm px-2 py-1"
+               className="bg-red-400 rounded-sm px-2 py-1 mx-2"
                onClick={handleMultiDelete}
                >Delete</button>
                 <input
@@ -277,7 +282,7 @@ const ViewCategory = () => {
                   name="deleteAll"
                   id="deleteAllCat"
                   onClick={handleAllCheck }
-                  className="accent-[#5351c9]"
+                  className="accent-[#5351c9] cursor-pointer"
                   checked={ifAllChecked}
                 />
               </th>

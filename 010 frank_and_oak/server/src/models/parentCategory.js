@@ -33,7 +33,7 @@ parentCategorySchema.pre('save', function(){
 });
 
 // modal banana & modal ka name hamesha capital rakhna chiye
-const  ParentCategory = mongoose.model('ParentCategory', parentCategorySchema);
+const  ParentCategory = mongoose.model('parent_category', parentCategorySchema);
 
 module.exports = ParentCategory;
 

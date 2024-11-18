@@ -8,7 +8,7 @@ const {
 const allRoutes = express.Router();
 
 allRoutes.use('/admin-panel',adminPanelRouter);
-allRoutes.use('/websiter',websiteRouter);
+allRoutes.use('/websiter',websiteRouter); 
 allRoutes.use('/app',appRouter);
 
 module.exports = allRoutes;
